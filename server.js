@@ -26,16 +26,35 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + 'index.html');
 })
 
-app.get('/data', (req, res) => {
-  conn.query('SELECT * FROM tracks_table', (err, rows) => {
+app.get('/playlists', (req, res) => {
+  conn.query('SELECT * FROM playLists_table;', (err, rows) => {
     if (err) {
-      console.log( err );
+      res.status(500).json({error: 'Internal database error'});
     } else {
       res.json(rows);
     }
 
   });
 })
+
+app.post('/playlists', (req, res) => {
+  conn.query('INSERT INTO playLists_table (title) VALUES (?);', [req.body.title], (err, rows) => {
+    if (err) {
+      res.status(500).json({error: 'Internal database error'});
+    } else {
+
+      conn.query('SELECT * FROM playLists_table ORDER BY listId ASC', (err, rows) => {
+        if (err) {
+          res.status(500).json({error: 'Internal database error'});
+        } else {
+          res.json(rows);
+        }
+      })
+
+    }
+
+  })
+});
 
 
 
