@@ -34,8 +34,8 @@ app.get('/playlists', (req, res) => {
     } else {
       res.json(rows);
     }
-  });
-})
+  })
+});
 
 app.post('/playlists', (req, res) => {
   conn.query('INSERT INTO playLists_table (title) VALUES (?);', [req.body.title], (err, rows) => {
