@@ -13,5 +13,6 @@ CREATE TABLE tracks_table (
     artist varchar(255),
     duration int, 
     path varchar(255),
+                            //playlist int,
     PRIMARY KEY (trackId)
 );
