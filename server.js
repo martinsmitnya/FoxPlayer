@@ -100,62 +100,54 @@ app.get('/playlist-tracks', (req, res) => {
 
 
 
+
+app.get('/playlist-tracks/:playlist_id', (req, res) => {
+    conn.query('SELECT * FROM playLists_table WHERE listId = (?);',[req.params.playlist_id], (err, playLists) => {
+      if (playLists.length < 1) {
+        res.status(404).json({error: 'There is no such playlist'});
+      } else if (err) {
+        res.status(500).json({ error: 'Internal database error' });
+      } else {
+        conn.query('SELECT * FROM tracks_table WHERE playlist = (?);', [req.params.playlist_id], (err, rows) => {
+          if (err) {
+            res.status(500).json({ error: 'Internal database error' });
+          } else {
+            res.json(rows);
+          }
+        });
+      }
+    });
+})
 //SELECT tracks aded to teh given playlist STILL NEEDS IMPLEMENTATION
-// app.get('/playlist-tracks/:playlist_id', (req, res) => {
-//     conn.query('SELECT * FROM playLists_table WHERE listId = (?);',[req.params.playlist_id], (err, playLists) => {
-//       if (playLists.length < 1) {
-//         res.json({error: 'There is no such playlist'});
-//       } else if (err) {
-//         res.status(500).json({ error: 'Internal database error' });
-//       } else {
 
 
-//         //SELECT tracks aded to teh given playlist
-//         conn.query('SELECT * FROM tracks_table WHERE ???the tracks are in listId playlist???? = (?);', [req.params.playlist_id], (err, rows) => {
-//           if (err) {
-//             res.status(500).json({ error: 'Internal database error' });
-//         //SELECT tracks aded to teh given playlist
-
-
-//           } else {
-//             res.json(rows);
-//           }
-//         });
-//       }
-//     });
-// })
-//SELECT tracks aded to teh given playlist STILL NEEDS IMPLEMENTATION
-//WHERE DO WE INSERT THE TRACK?
-app.post('/playlist-tracks/:playlist_id', (req, res) => {
+app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
   conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
     if (playLists.length < 1) {
       res.status(404).json({ error: 'No such playlist' });
     } else if (err) {
       res.status(500).json({ error: 'Internal database error' });
     } else {
-
-
-
-
-      //WHERE DO WE INSERT THE TRACK?
-      conn.query('INSERT INTO ?????...', (err, rows) => {
-        if (err) {
+      conn.query('SELECT * FROM tracks_table WHERE trackId = (?);', [req.params.track_id], (err, tracks) => {
+        if (tracks.length < 1) {
+          res.status(404).json({ error: 'No such track' });
+        } else if (err) {
           res.status(500).json({ error: 'Internal database error' });
-
-
-
-
-
-          
+        } else if (tracks[0].playlist === Number(req.params.playlist_id) ) {
+          res.status(406).json({ error: 'Already added this track' });
         } else {
-          //I give back the list as a JSON
-          res.json(playLists);
+          conn.query('UPDATE tracks_table SET playlist = (?) WHERE trackId = (?);', [req.params.playlist_id, req.params.track_id], (err, rows) => {
+            if (err) {
+              res.status(500).json({ error: 'Internal database error' });
+            } else {
+              res.json({response: 'Inserted'});
+            }
+          });
         }
-      });
+      })
     }
-  })  
-})
-//WHERE DO WE INSERT THE TRACK?
+  })
+});
 
 // app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
 //   conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
