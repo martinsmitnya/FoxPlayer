@@ -98,28 +98,23 @@ app.get('/playlist-tracks', (req, res) => {
   });
 });
 
-
-
-
 app.get('/playlist-tracks/:playlist_id', (req, res) => {
-    conn.query('SELECT * FROM playLists_table WHERE listId = (?);',[req.params.playlist_id], (err, playLists) => {
-      if (playLists.length < 1) {
-        res.status(404).json({error: 'There is no such playlist'});
-      } else if (err) {
-        res.status(500).json({ error: 'Internal database error' });
-      } else {
-        conn.query('SELECT * FROM tracks_table WHERE playlist = (?);', [req.params.playlist_id], (err, rows) => {
-          if (err) {
-            res.status(500).json({ error: 'Internal database error' });
-          } else {
-            res.json(rows);
-          }
-        });
-      }
-    });
+  conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
+    if (playLists.length < 1) {
+      res.status(404).json({ error: 'There is no such playlist' });
+    } else if (err) {
+      res.status(500).json({ error: 'Internal database error' });
+    } else {
+      conn.query('SELECT * FROM tracks_table WHERE playlist = (?);', [req.params.playlist_id], (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: 'Internal database error' });
+        } else {
+          res.json(rows);
+        }
+      });
+    }
+  });
 })
-//SELECT tracks aded to teh given playlist STILL NEEDS IMPLEMENTATION
-
 
 app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
   conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
@@ -133,14 +128,14 @@ app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
           res.status(404).json({ error: 'No such track' });
         } else if (err) {
           res.status(500).json({ error: 'Internal database error' });
-        } else if (tracks[0].playlist === Number(req.params.playlist_id) ) {
+        } else if (tracks[0].playlist === Number(req.params.playlist_id)) {
           res.status(406).json({ error: 'Already added this track' });
         } else {
           conn.query('UPDATE tracks_table SET playlist = (?) WHERE trackId = (?);', [req.params.playlist_id, req.params.track_id], (err, rows) => {
             if (err) {
               res.status(500).json({ error: 'Internal database error' });
             } else {
-              res.json({response: 'Inserted'});
+              res.json({ response: 'Inserted' });
             }
           });
         }
@@ -149,32 +144,34 @@ app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
   })
 });
 
-// app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
-//   conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
-//     if (playLists.length < 1) {
-//       res.status(404).json({ error: 'No such playlist' });
-//     } else if (err) {
-//       res.status(500).json({ error: 'Internal database error' });
-//     } else {
+app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
+  conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
+    if (playLists.length < 1) {
+      res.status(404).json({ error: 'No such playlist' });
+    } else if (err) {
+      res.status(500).json({ error: 'Internal database error' });
+    } else {
 
-//       //HOW DO I TELL WHICH TRACK IS IN THE TABLE?
-//       conn.query('SELECT * FROM tracks_table WHERE trackId = (?);', [req.params.track_id], (err, tracks) => {
-//         if (tracks.length < 1) {
-//           res.status(404).json({ error: 'No such track' });
-//         } else if (err) {
-//           res.status(500).json({ error: 'Internal database error' });
-//         } else {
-//           //DELETE TEH TRACK
-//           conn.query????????
+      //HOW DO I TELL WHICH TRACK IS IN THE TABLE?
+      conn.query('SELECT * FROM tracks_table WHERE trackId = (?);', [req.params.track_id], (err, tracks) => {
+        if (tracks.length < 1) {
+          res.status(404).json({ error: 'No such track' });
+        } else if (err) {
+          res.status(500).json({ error: 'Internal database error' });
+        } else {
+          //UPDATE TRACK playlist asignement to null
+          conn.query('UPDATE tracks_table SET playlist = null WHERE trackId = (?);', [req.params.track_id], (err, rows) => {
+            if (err) {
+              res.status(500).json({ error: 'Internal database error' });
+            } else {
+              res.json({response: 'Delisted'});
+            }
+          });
 
-
-
-//         }
-//       })
-
-
-
-//     }
-// });
+        }
+      })
+    }
+  })
+});
 
 app.listen(3000, () => { console.log('listening on 3000') })
