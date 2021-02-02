@@ -13,6 +13,14 @@ const conn = mysql.createConnection({
   insecureAuth: process.env.DB_AUTH,
 });
 
+conn.connect( (err) => {
+  if (err) {
+    console.log(err)
+  } else {
+    console.log('Connceted to: ' + process.env.DB_DATABASE + ' database' );
+  }
+})
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + 'index.html');
