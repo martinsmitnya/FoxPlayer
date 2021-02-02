@@ -56,6 +56,35 @@ app.post('/playlists', (req, res) => {
   })
 });
 
+app.delete('/playlists/:id', (req, res) => {
+  conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.id], (err, selectedRows) => {
+    if (err) {
+      res.status(500).json({error: 'Internal database error'});
+    } else {
+      //DELETE playList with listId
+
+      conn.query('DELETE FROM playLists_table WHERE listId = (?);', [req.params.id], (err, rows) => {
+        if (err) {
+          res.status(500).json({error: 'Internal database error'});
+        } else {
+          if (!req.params.id) {
+            res.status(500).json({error: 'No id was given'});
+          } else if (selectedRows.length < 1) {
+            res.status(404).json({error: 'This playlist does not exists'});
+          } else if (selectedRows[0].systems === 1) {
+            res.status(200).json({error: 'This playlist can not be deleted'});
+          } else {
+            res.status(200).json('DELETED: '+ selectedRows[0]);
+          }
+        }
+      });
+      //DELETE playList with listId
+
+    }
+  })
+ 
+})
+
 
 
 app.listen(3000, ()=> { console.log('listening on 3000')})
