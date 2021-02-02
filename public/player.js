@@ -13,4 +13,14 @@ window.addEventListener('keyup', (e) => {
     player.pause();
     playing = false;
   }
+
+  if (e.key === 'ArrowRight' || e.key === 'd') {
+    console.log('Fastforward');
+    player.currentTime += 3;
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'a') {
+    console.log('Rewind');
+    player.currentTime -= 3;
+  }
+
 });
