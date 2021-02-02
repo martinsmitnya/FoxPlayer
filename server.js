@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + 'index.html');
 })
 
+//PlayLists      PlayLists      PlayLists      PlayLists      PlayLists
 app.get('/playlists', (req, res) => {
   conn.query('SELECT * FROM playLists_table;', (err, rows) => {
     if (err) {
@@ -33,7 +34,6 @@ app.get('/playlists', (req, res) => {
     } else {
       res.json(rows);
     }
-
   });
 })
 
@@ -42,7 +42,6 @@ app.post('/playlists', (req, res) => {
     if (err) {
       res.status(500).json({ error: 'Internal database error' });
     } else {
-
       conn.query('SELECT * FROM playLists_table ORDER BY listId ASC', (err, rows) => {
         if (err) {
           res.status(500).json({ error: 'Internal database error' });
@@ -50,9 +49,7 @@ app.post('/playlists', (req, res) => {
           res.json(rows);
         }
       })
-
     }
-
   })
 });
 
@@ -61,8 +58,6 @@ app.delete('/playlists/:id', (req, res) => {
     if (err) {
       res.status(500).json({ error: 'Internal database error' });
     } else {
-      //DELETE playList with listId
-
       conn.query('DELETE FROM playLists_table WHERE listId = (?);', [req.params.id], (err, rows) => {
         if (err) {
           res.status(500).json({ error: 'Internal database error' });
@@ -77,15 +72,10 @@ app.delete('/playlists/:id', (req, res) => {
             res.status(200).json('DELETED: ' + selectedRows[0]);
           }
         }
-      });
-      //DELETE playList with listId
-
+      })
     }
   })
-
-})
-
-
+});
 
 //Tracks      Tracks      Tracks      Tracks       Tracks      Tracks
 app.get('/playlist-tracks', (req, res) => {
@@ -95,7 +85,7 @@ app.get('/playlist-tracks', (req, res) => {
     } else {
       res.json(rows);
     }
-  });
+  })
 });
 
 app.get('/playlist-tracks/:playlist_id', (req, res) => {
@@ -111,10 +101,10 @@ app.get('/playlist-tracks/:playlist_id', (req, res) => {
         } else {
           res.json(rows);
         }
-      });
+      })
     }
-  });
-})
+  })
+});
 
 app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
   conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
@@ -137,7 +127,7 @@ app.post('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
             } else {
               res.json({ response: 'Inserted' });
             }
-          });
+          })
         }
       })
     }
@@ -151,8 +141,6 @@ app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
     } else if (err) {
       res.status(500).json({ error: 'Internal database error' });
     } else {
-
-      //HOW DO I TELL WHICH TRACK IS IN THE TABLE?
       conn.query('SELECT * FROM tracks_table WHERE trackId = (?);', [req.params.track_id], (err, tracks) => {
         if (tracks.length < 1) {
           res.status(404).json({ error: 'No such track' });
@@ -166,8 +154,7 @@ app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
             } else {
               res.json({response: 'Delisted'});
             }
-          });
-
+          })
         }
       })
     }
