@@ -22,5 +22,4 @@ window.addEventListener('keyup', (e) => {
     console.log('Rewind');
     player.currentTime -= 3;
   }
-
 });
