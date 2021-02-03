@@ -152,7 +152,7 @@ app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
             if (err) {
               res.status(500).json({ error: 'Internal database error' });
             } else {
-              res.json({response: 'Delisted'});
+              res.json({ response: 'Delisted' });
             }
           })
         }
@@ -162,3 +162,35 @@ app.delete('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
 });
 
 app.listen(3000, () => { console.log('listening on 3000') })
+
+
+
+
+
+
+
+
+
+//Current track playing
+
+app.get('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
+  conn.query('SELECT * FROM playLists_table WHERE listId = (?);', [req.params.playlist_id], (err, playLists) => {
+    if (playLists.length < 1) {
+      res.status(404).json({ error: 'No such playlist' });
+    } else if (err) {
+      res.status(500).json({ error: 'Internal database error' });
+    } else {
+      conn.query('SELECT * FROM tracks_table WHERE trackId = (?);', [req.params.track_id], (err, tracks) => {
+        if (tracks.length < 1) {
+          res.status(404).json({ error: 'No such track' });
+        } else if (err) {
+          res.status(500).json({ error: 'Internal database error' });
+        } else {
+          res.status(200).json(tracks);
+        }
+      })
+    }
+  })
+});
+
+//current track palying
