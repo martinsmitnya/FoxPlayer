@@ -194,3 +194,21 @@ app.get('/playlist-tracks/:playlist_id/:track_id', (req, res) => {
 });
 
 //current track palying
+
+
+//Create track
+app.post('/addTrack', (req, res)=> {
+  conn.query('INSERT INTO tracks_table (title, artist, duration, path) VALUES (?, ?, ?, ?)', [req.body.title, req.body.artist, req.body.duration, req.body.path], (err, rows) => {
+    if (err) {
+      res.status(500).json({error: 'Problem at track creation'})
+    } else {
+      conn.query('SELECT * FROM tracks_table;', (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: 'Failed to retrive database values after sucesfull creatinon' });
+        } else {
+          res.json(rows);
+        }
+      })
+    }
+  })
+});

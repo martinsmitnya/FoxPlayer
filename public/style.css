@@ -137,9 +137,11 @@
   height: 7.894%;
   padding: 17.04px 0 17.04px 10px;
   
+  
 }
 .title{
   width: 80%;
+  cursor: pointer;
 }
 .duration{
   width: 30px;

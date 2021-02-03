@@ -22,6 +22,11 @@ fetch('http://localhost:3000/playlist-tracks')
     //Create track and add to .addedTracksWrapper
     let track = document.createElement('div');
     track.setAttribute('class', 'track');
+    
+    //Player acceses this source path
+    track.setAttribute('acessPath', data[i].path);
+    //Player acceses this source path
+
     addedTracksWrapper.appendChild(track);
     //Track title
     let title = document.createElement('p');
@@ -44,7 +49,6 @@ let trackID = 1;
 fetch(`http://localhost:3000/playlist-tracks/${playlistID}/${trackID}`)
 .then(response => response.json())
 .then((data) => {
-  console.log(data[0]);
   let currentlyPlayingTitle = document.querySelector('.currentlyPlayingTitle');
   let currentlyPlayingArtist = document.querySelector('.currentlyPlayingArtist');
   currentlyPlayingTitle.innerHTML = data[0].title;
