@@ -50,4 +50,4 @@ function trackInserter() {
 setTimeout(() => {
   trackInserter();
   console.log('player loaded');
-}, 2000);
+}, 1000);
